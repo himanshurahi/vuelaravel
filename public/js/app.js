@@ -5422,6 +5422,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5859,6 +5860,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -6180,7 +6182,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.prev = 14;
                 _context.t0 = _context["catch"](2);
                 commit("setError", {
-                  error: _context.t0.response.data.error,
+                  error: _context.t0.response.data,
                   type: "login"
                 });
                 commit("setLoading", {
@@ -6235,7 +6237,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   status: false
                 });
                 commit("setError", {
-                  error: _context2.t0.response.data.errors,
+                  error: _context2.t0.response.data,
                   type: "signup"
                 });
 
@@ -30859,6 +30861,9 @@ var render = function () {
                 },
               },
               [
+                _vm._v(
+                  "\n            " + _vm._s(_vm.getError) + "\n            "
+                ),
                 _c("div", { staticClass: "row mb-3" }, [
                   _c(
                     "label",
@@ -30911,7 +30916,8 @@ var render = function () {
                         _c("strong", [
                           _vm._v(
                             _vm._s(
-                              _vm.getError.type == "login" && _vm.getError.error
+                              _vm.getError.type == "login" &&
+                                _vm.getError.error.email[0]
                             )
                           ),
                         ]),
@@ -31437,6 +31443,7 @@ var render = function () {
           _c("div", { staticClass: "card-header" }, [_vm._v("Register")]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
+            _vm._v("\n          " + _vm._s(_vm.getError) + "\n          "),
             _c(
               "form",
               {

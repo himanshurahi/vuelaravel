@@ -5,6 +5,7 @@
         <div class="card">
           <div class="card-header">Register</div>
           <div class="card-body">
+            {{getError}}
             <form @submit.prevent="handleSubmit">
               <div class="row mb-3">
                 <label for="name" class="col-md-4 col-form-label text-md-right"

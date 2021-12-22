@@ -6,6 +6,7 @@
           <div class="card-header">Login</div>
           <div class="card-body">
             <form @submit.prevent="handleSubmit">
+              {{getError}}
               <div class="row mb-3">
                 <label for="email" class="col-md-4 col-form-label text-md-right"
                   >Email</label
@@ -25,7 +26,7 @@
                     v-model="email"
                   />
                   <span class="invalid-feedback" role="alert">
-                    <strong>{{ getError.type == 'login' && getError.error }}</strong>
+                    <strong>{{ getError.type == 'login' && getError.error.email[0] }}</strong>
                   </span>
                 </div>
               </div>

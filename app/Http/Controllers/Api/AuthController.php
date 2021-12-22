@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -14,11 +15,15 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $this->validate($request, [
+        $validation = Validator::make($request->all(), [
             'name' => 'required|min:4',
             'email' => 'required|email|unique:users',
             'password' => 'confirmed|required|min:8',
         ]);
+
+        if ($validation->fails()) {
+            return response()->json($validation->errors(), 422);
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -36,6 +41,15 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        $validation = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json($validation->errors(), 422);
+        }
+
         $data = [
             'email' => $request->email,
             'password' => $request->password,
@@ -47,7 +61,9 @@ class AuthController extends Controller
                 ->createToken('test')->accessToken;
             return response()->json(['token' => $token, 'user' => auth()->user()], 200);
         } else {
-            return response()->json(['error' => 'Wrong username or password'], 401);
+            $validation->errors()->add('email', 'Wrong username or password');
+            return response()->json($validation->errors(), 422);
+            // return response()->json(['error' => 'Wrong username or password'], 401);
         }
     }
     public function getUser(Request $request)

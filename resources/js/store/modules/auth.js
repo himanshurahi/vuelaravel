@@ -37,7 +37,7 @@ export default {
                 router.push({ name: "Home" });
             } catch (e) {
                 commit("setError", {
-                    error: e.response.data.error,
+                    error: e.response.data,
                     type: "login",
                 });
                 commit("setLoading", {
@@ -68,7 +68,7 @@ export default {
                     status: false,
                 });
                 commit("setError", {
-                    error: e.response.data.errors,
+                    error: e.response.data,
                     type: "signup",
                 });
             }
