@@ -34,7 +34,7 @@
                     id="email"
                     type="email"
                     class="form-control"
-                    :class="{ 'is-invalid': errors['email'] }"
+                    :class="{'is-invalid' : getError.type == 'signup' && getError.error.email}"
                     name="email"
                     value=""
                     required
@@ -42,7 +42,7 @@
                     v-model="email"
                   />
                   <span class="invalid-feedback" role="alert">
-                    <strong>{{ errors["email"] && errors["email"][0] }}</strong>
+                    {{getError.type == 'signup' && getError.error.email && getError.error.email[0]}}
                   </span>
                 </div>
               </div>
@@ -59,16 +59,14 @@
                     id="password"
                     type="password"
                     class="form-control"
-                    :class="{ 'is-invalid': errors['password'] }"
+                      :class="{'is-invalid' : getError.type == 'signup' && getError.error.password}"
                     name="password"
                     required
                     autocomplete="new-password"
                     v-model="password"
                   />
                   <span class="invalid-feedback" role="alert">
-                    <strong>{{
-                      errors["password"] && errors["password"][0]
-                    }}</strong>
+                     {{getError.type == 'signup' &&  getError.error.password && getError.error.password[0] }}
                   </span>
                 </div>
               </div>
@@ -86,7 +84,6 @@
                     type="password"
                     class="form-control"
                     name="password_confirmation"
-                    :class="{ 'is-invalid': errors['password_confirmation'] }"
                     required
                     autocomplete="new-password"
                     v-model="password_confirmation"
@@ -96,12 +93,7 @@
 
               <div class="row mb-0">
                 <div class="col-md-6 offset-md-4">
-                  <button
-                    class="btn btn-primary"
-                    type="button"
-                    disabled
-                    v-if="loading"
-                  >
+                  <button class="btn btn-primary" type="button" disabled v-if="loading.type == 'signup' && loading.status == true">
                     <span
                       class="spinner-border spinner-border-sm"
                       role="status"
@@ -123,6 +115,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -130,29 +123,18 @@ export default {
       email: "",
       password: "",
       password_confirmation: "",
-      errors: [],
-      loading: false,
     };
   },
-
+  computed: mapGetters(["getError", "loading"]),
   methods: {
-    async handleSubmit() {
-      try {
-        const user = {
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          password_confirmation: this.password_confirmation,
-        };
-        this.loading = true;
-        const response = await axios.post("api/register", user);
-        console.log(response.data);
-        localStorage.setItem('token', response.data.token)
-        this.loading = false;
-      } catch (e) {
-        this.errors = e.response.data.errors;
-        this.loading = false;
-      }
+    ...mapActions(["Signup"]),
+    handleSubmit() {
+      this.Signup({
+        name: this.name,
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.password_confirmation,
+      });
     },
   },
 };

@@ -20,36 +20,40 @@
         <!-- Right Side Of Navbar -->
         <ul class="navbar-nav ms-auto">
           <!-- Authentication Links -->
-          <li class="nav-item" v-if="!isLoggedIn">
-            <router-link class="nav-link" :to="{ name: 'Login' }"
-              >Login</router-link
-            >
-          </li>
-          <li class="nav-item" v-if="!isLoggedIn">
-            <router-link class="nav-link" :to="{ name: 'Register' }"
-              >Register</router-link
-            >
-          </li>
-          <li class="nav-item dropdown" v-if="isLoggedIn">
-            <a
-              id="navbarDropdown"
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              {{ user.name }}
-            </a>
+          <div v-if="!isLoggedIn" style="display: flex">
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{ name: 'Login' }"
+                >Login</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" :to="{ name: 'Register' }"
+                >Register</router-link
+              >
+            </li>
+          </div>
+          <div v-else>
+            <li class="nav-item dropdown">
+              <a
+                id="navbarDropdown"
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {{ getCurrentUser.name }}
+              </a>
 
-            <div
-              class="dropdown-menu dropdown-menu-right"
-              aria-labelledby="navbarDropdown"
-            >
-              <a class="dropdown-item" href="">Logout</a>
-            </div>
-          </li>
+              <div
+                class="dropdown-menu dropdown-menu-right"
+                aria-labelledby="navbarDropdown"
+              >
+                <a class="dropdown-item" @click.prevent="handleLogout" href="">Logout</a>
+              </div>
+            </li>
+          </div>
         </ul>
       </div>
     </div>
@@ -57,8 +61,15 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
-  props: ["user", 'isLoggedIn'],
+  computed: mapGetters(["getCurrentUser", "isLoggedIn"]),
+  methods: {
+    ...mapActions(["logout"]),
+    handleLogout() {
+      this.logout();
+    },
+  },
 };
 </script>
 

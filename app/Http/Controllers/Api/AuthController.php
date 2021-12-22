@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -17,7 +18,6 @@ class AuthController extends Controller
             'name' => 'required|min:4',
             'email' => 'required|email|unique:users',
             'password' => 'confirmed|required|min:8',
-
         ]);
 
         $user = User::create([
@@ -53,5 +53,14 @@ class AuthController extends Controller
     public function getUser(Request $request)
     {
         return response()->json(['user' => auth()->user()]);
+    }
+    public function logout()
+    {
+        if (Auth::check()) {
+            Auth::user()
+                ->AauthAcessToken()
+                ->delete();
+            return response()->json(['message' => 'Logout Successfully'], 200);
+        }
     }
 }

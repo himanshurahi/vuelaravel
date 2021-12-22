@@ -16,7 +16,7 @@
                     id="email"
                     type="email"
                     class="form-control"
-                    :class="{ 'is-invalid': errors }"
+                    :class="{ 'is-invalid': getError.type == 'login'}"
                     name="email"
                     value=""
                     required
@@ -25,7 +25,7 @@
                     v-model="email"
                   />
                   <span class="invalid-feedback" role="alert">
-                    <strong>{{ errors }}</strong>
+                    <strong>{{ getError.type == 'login' && getError.error }}</strong>
                   </span>
                 </div>
               </div>
@@ -51,16 +51,17 @@
 
               <div class="row mb-0">
                 <div class="col-md-8 offset-md-4">
-                  <button type="submit" class="btn btn-primary" v-if="!loading">
-                    Login
-                  </button>
-                  <button class="btn btn-primary" type="button" disabled v-else>
+                
+                  <button class="btn btn-primary" type="button" disabled v-if="loading.type == 'login' && loading.status == true">
                     <span
                       class="spinner-border spinner-border-sm"
                       role="status"
                       aria-hidden="true"
                     ></span>
                     Loading...
+                  </button>
+                    <button type="submit" class="btn btn-primary" v-else >
+                    Login
                   </button>
                 </div>
               </div>
@@ -73,33 +74,19 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
       email: "",
       password: "",
-      loading: false,
-      errors: null,
     };
   },
+  computed : mapGetters(['getError', 'loading']),
   methods: {
-    async handleSubmit() {
-      try {
-        const user = {
-          email: this.email,
-          password: this.password,
-        };
-        this.loading = true;
-        const response = await axios.post("api/login", user);
-        console.log(response.data);
-        localStorage.setItem("token", response.data.token);
-        this.loading = false;
-        this.errors = null;
-        this.$router.push({ name: "Home" });
-      } catch (e) {
-        this.errors = e.response.data.error;
-        this.loading = false;
-      }
+    ...mapActions(['login']),
+    handleSubmit() {
+      this.login({ email: this.email, password: this.password })
     },
   },
 };
