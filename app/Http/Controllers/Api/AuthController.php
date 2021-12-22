@@ -47,7 +47,11 @@ class AuthController extends Controller
                 ->createToken('test')->accessToken;
             return response()->json(['token' => $token, 'user' => auth()->user()], 200);
         } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            return response()->json(['error' => 'Wrong username or password'], 401);
         }
+    }
+    public function getUser(Request $request)
+    {
+        return response()->json(['user' => auth()->user()]);
     }
 }

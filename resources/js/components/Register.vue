@@ -147,6 +147,7 @@ export default {
         this.loading = true;
         const response = await axios.post("api/register", user);
         console.log(response.data);
+        localStorage.setItem('token', response.data.token)
         this.loading = false;
       } catch (e) {
         this.errors = e.response.data.errors;
