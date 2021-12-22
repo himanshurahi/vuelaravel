@@ -1,28 +1,28 @@
-import router from '../../routes/routes'
+import router from "../../routes/routes";
 export default {
     namespaced: true,
     state: {
         products: [],
         loading: {
             type: "",
-            status: false
+            status: false,
+            id: null
         },
         error: {
             error: "",
             type: ""
-        }
+        },
+        productsLoading: false
     },
     getters: {
-        getProducts: state => state.products,
-        loading: state => state.loading,
-        error: state => state.error
+        getProducts: (state) => state.products,
+        loading: (state) => state.loading,
+        error: (state) => state.error,
+        productsLoading: (state) => state.productsLoading
     },
     actions: {
         async fetchProducts({commit}) {
-            commit("setLoading", {
-                type: "products",
-                status: true
-            });
+            commit("productsLoading", true);
             let token = localStorage.getItem("token");
             try {
                 let res = await axios.get("api/products", {
@@ -32,19 +32,13 @@ export default {
                 });
                 console.log(res.data);
                 commit("setProducts", res.data);
-                commit("setLoading", {
-                    type: "products",
-                    status: false
-                });
+                commit("productsLoading", false);
             } catch (e) {
                 commit("setError", {
                     error: e.response.data,
                     type: "products"
                 });
-                commit("setLoading", {
-                    type: "products",
-                    status: false
-                });
+                commit("productsLoading", false);
             }
         },
         async saveProduct({
@@ -66,7 +60,7 @@ export default {
                     status: false
                 });
                 commit("clearErrors");
-                router.push({name: "Home"})
+                router.push({name: "Home"});
             } catch (e) {
                 commit("setError", {
                     error: e.response.data,
@@ -77,12 +71,48 @@ export default {
                     status: false
                 });
             }
+        },
+
+        async deleteProduct({
+            commit
+        }, id) {
+            commit("setLoading", {
+                type: "deleteProduct",
+                status: true,
+                id: id
+            });
+            let token = localStorage.getItem("token");
+            try {
+                let res = await axios.delete("api/products/" + id, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                commit("setLoading", {
+                    type: "deleteProduct",
+                    status: false,
+                    id: id
+                });
+                commit('deleteProductWithId', id)
+            } catch (e) {
+                commit("setError", {
+                    error: e.response,
+                    type: "deleteProduct"
+                });
+                commit("setLoading", {
+                    type: "deleteProduct",
+                    status: false,
+                    id: id
+
+                });
+            }
         }
 
     },
     mutations: {
         setProducts: (state, products) => {
-            state.products = products
+            state.products = products;
         },
 
         setLoading: (state, status) => {
@@ -91,6 +121,14 @@ export default {
         setError: (state, error) => {
             state.error = error;
         },
+        deleteProductWithId: (state, id) => {
+            let updatedProducts = state.products.filter(product => product.id != id);
+            state.products = updatedProducts;
+        },
+        productsLoading: (state, status) => {
+            state.productsLoading = status
+        },
+
         clearErrors: (state) => {
             state.error = {
                 error: "",

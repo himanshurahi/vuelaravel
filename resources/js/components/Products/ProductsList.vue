@@ -4,9 +4,8 @@
       <router-link :to="{ name: 'AddProduct' }">
         <button type="button" class="btn btn-success">Add Product</button>
       </router-link>
-    {{loading}}
-      <div class="row" v-if="!loading.status">
-        <div class="col-4" v-for="product in getProducts" :key="product.id" >
+      <div class="row" v-if="!productsLoading">
+        <div class="col-4" v-for="product in getProducts" :key="product.id">
           <!-- <div class="spinner-border" role="status"></div> -->
           <div class="card" style="width: 18rem">
             <!-- <img class="card-img-top" src="" alt="Card image cap" /> -->
@@ -17,8 +16,43 @@
                 the bulk of the card's content.
               </p>
               <a href="#" class="btn btn-primary">Buy Now</a>
+              <button
+                class="btn btn-danger"
+                type="button"
+                disabled
+                v-if="
+                  loading.type == 'deleteProduct' &&
+                  loading.status == true &&
+                  loading.id == product.id
+                "
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Deleting...
+              </button>
+              <a
+                href="#"
+                @click.prevent="handleDelete(product.id)"
+                class="btn btn-danger"
+                v-else
+                >Delete</a
+              >
             </div>
           </div>
+        </div>
+      </div>
+      <div class="row" v-if="productsLoading">
+        <div class="col-12 text-center">
+          <h2>Please Wait..</h2>
+        </div>
+      </div>
+
+      <div class="row" v-if="!productsLoading && getProducts.length == 0">
+        <div class="col-12 text-center">
+          <h2>No products Found.</h2>
         </div>
       </div>
     </main>
@@ -39,13 +73,19 @@ export default {
     };
   },
 
-  computed: mapGetters('products', ['getProducts', 'loading']),
+  computed: mapGetters("products", [
+    "getProducts",
+    "loading",
+    "productsLoading",
+  ]),
   methods: {
-    ...mapActions('products', ['fetchProducts']),
+    ...mapActions("products", ["fetchProducts", "deleteProduct"]),
+    handleDelete(id) {
+      this.deleteProduct(id);
+    },
   },
   mounted() {
     this.fetchProducts();
-    
   },
 };
 </script>

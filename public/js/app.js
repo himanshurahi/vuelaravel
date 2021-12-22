@@ -5694,6 +5694,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5717,8 +5751,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }]
     };
   },
-  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)('products', ['getProducts', 'loading']),
-  methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)('products', ['fetchProducts'])),
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)("products", ["getProducts", "loading", "productsLoading"]),
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)("products", ["fetchProducts", "deleteProduct"])), {}, {
+    handleDelete: function handleDelete(id) {
+      this.deleteProduct(id);
+    }
+  }),
   mounted: function mounted() {
     this.fetchProducts();
   }
@@ -6408,12 +6446,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     products: [],
     loading: {
       type: "",
-      status: false
+      status: false,
+      id: null
     },
     error: {
       error: "",
       type: ""
-    }
+    },
+    productsLoading: false
   },
   getters: {
     getProducts: function getProducts(state) {
@@ -6424,6 +6464,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     error: function error(state) {
       return state.error;
+    },
+    productsLoading: function productsLoading(state) {
+      return state.productsLoading;
     }
   },
   actions: {
@@ -6435,10 +6478,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 commit = _ref.commit;
-                commit("setLoading", {
-                  type: "products",
-                  status: true
-                });
+                commit("productsLoading", true);
                 token = localStorage.getItem("token");
                 _context.prev = 3;
                 _context.next = 6;
@@ -6452,10 +6492,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 res = _context.sent;
                 console.log(res.data);
                 commit("setProducts", res.data);
-                commit("setLoading", {
-                  type: "products",
-                  status: false
-                });
+                commit("productsLoading", false);
                 _context.next = 16;
                 break;
 
@@ -6466,10 +6503,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   error: _context.t0.response.data,
                   type: "products"
                 });
-                commit("setLoading", {
-                  type: "products",
-                  status: false
-                });
+                commit("productsLoading", false);
 
               case 16:
               case "end":
@@ -6532,6 +6566,60 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee2, null, [[3, 12]]);
       }))();
+    },
+    deleteProduct: function deleteProduct(_ref3, id) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        var commit, token, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref3.commit;
+                commit("setLoading", {
+                  type: "deleteProduct",
+                  status: true,
+                  id: id
+                });
+                token = localStorage.getItem("token");
+                _context3.prev = 3;
+                _context3.next = 6;
+                return axios["delete"]("api/products/" + id, {
+                  headers: {
+                    Authorization: "Bearer ".concat(token)
+                  }
+                });
+
+              case 6:
+                res = _context3.sent;
+                commit("setLoading", {
+                  type: "deleteProduct",
+                  status: false,
+                  id: id
+                });
+                commit('deleteProductWithId', id);
+                _context3.next = 15;
+                break;
+
+              case 11:
+                _context3.prev = 11;
+                _context3.t0 = _context3["catch"](3);
+                commit("setError", {
+                  error: _context3.t0.response,
+                  type: "deleteProduct"
+                });
+                commit("setLoading", {
+                  type: "deleteProduct",
+                  status: false,
+                  id: id
+                });
+
+              case 15:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, null, [[3, 11]]);
+      }))();
     }
   },
   mutations: {
@@ -6543,6 +6631,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     setError: function setError(state, error) {
       state.error = error;
+    },
+    deleteProductWithId: function deleteProductWithId(state, id) {
+      var updatedProducts = state.products.filter(function (product) {
+        return product.id != id;
+      });
+      state.products = updatedProducts;
+    },
+    productsLoading: function productsLoading(state, status) {
+      state.productsLoading = status;
     },
     clearErrors: function clearErrors(state) {
       state.error = {
@@ -31370,8 +31467,8 @@ var render = function () {
             [_vm._v("Add Product")]
           ),
         ]),
-        _vm._v("\n  " + _vm._s(_vm.loading) + "\n    "),
-        !_vm.loading.status
+        _vm._v(" "),
+        !_vm.productsLoading
           ? _c(
               "div",
               { staticClass: "row" },
@@ -31400,6 +31497,44 @@ var render = function () {
                           },
                           [_vm._v("Buy Now")]
                         ),
+                        _vm._v(" "),
+                        _vm.loading.type == "deleteProduct" &&
+                        _vm.loading.status == true &&
+                        _vm.loading.id == product.id
+                          ? _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                attrs: { type: "button", disabled: "" },
+                              },
+                              [
+                                _c("span", {
+                                  staticClass:
+                                    "spinner-border spinner-border-sm",
+                                  attrs: {
+                                    role: "status",
+                                    "aria-hidden": "true",
+                                  },
+                                }),
+                                _vm._v(
+                                  "\n              Deleting...\n            "
+                                ),
+                              ]
+                            )
+                          : _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-danger",
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function ($event) {
+                                    $event.preventDefault()
+                                    return _vm.handleDelete(product.id)
+                                  },
+                                },
+                              },
+                              [_vm._v("Delete")]
+                            ),
                       ]),
                     ]
                   ),
@@ -31408,12 +31543,37 @@ var render = function () {
               0
             )
           : _vm._e(),
+        _vm._v(" "),
+        _vm.productsLoading
+          ? _c("div", { staticClass: "row" }, [_vm._m(0)])
+          : _vm._e(),
+        _vm._v(" "),
+        !_vm.productsLoading && _vm.getProducts.length == 0
+          ? _c("div", { staticClass: "row" }, [_vm._m(1)])
+          : _vm._e(),
       ],
       1
     ),
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12 text-center" }, [
+      _c("h2", [_vm._v("Please Wait..")]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12 text-center" }, [
+      _c("h2", [_vm._v("No products Found.")]),
+    ])
+  },
+]
 render._withStripped = true
 
 

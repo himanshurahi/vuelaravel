@@ -36,4 +36,10 @@ class ProductController extends Controller
         $product->save();
         return response()->json(['message' => 'Product Created', 'product' => $product]);
     }
+
+    public function destroy($id){
+        $product = Product::find($id);
+        $product->delete();
+        return response()->json(['message' => 'Product Deleted']);
+    }
 }
