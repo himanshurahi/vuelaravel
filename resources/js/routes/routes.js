@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import ExampleComponent2 from "../components/ExampleComponent2"
 import Login from "../components/Login"
 import ProductsList from "../components/Products/ProductsList"
+import AddProduct from "../components/Products/AddProduct"
 import Register from "../components/Register"
 import store from "../store";
 
@@ -15,11 +16,19 @@ const routes = [
         component: ProductsList,
         name: "Home",
         beforeEnter: requireLogin
-    }, {
+    },
+    {
+        path: "/add",
+        component: AddProduct,
+        name: "AddProduct",
+        beforeEnter: requireLogin
+    },
+    {
         path: "/second",
         component: ExampleComponent2,
         name: "second"
-    }, {
+    },
+    {
         path: "/login",
         component: Login,
         name: "Login"
@@ -33,14 +42,11 @@ const routes = [
 const router = new VueRouter({routes, mode: "history"})
 
 function requireLogin(to, from, next) {
-
     const authenticated = localStorage.getItem('token');
     if (authenticated) {
-        next(true);
+        next();
     } else {
-        next({
-            path: '/login',
-        })
+        next({path: '/login'})
     }
 }
 

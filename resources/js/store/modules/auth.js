@@ -1,4 +1,4 @@
-import router from '../../routes/routes'
+import router from "../../routes/routes";
 export default {
     state: {
         user: null,
@@ -34,7 +34,7 @@ export default {
                     status: false,
                 });
                 commit("clearErrors");
-                router.push({name : "Home"})
+                router.push({ name: "Home" });
             } catch (e) {
                 commit("setError", {
                     error: e.response.data.error,
@@ -47,22 +47,22 @@ export default {
             }
         },
 
-        async Signup({commit}, user){
+        async Signup({ commit }, user) {
             commit("setLoading", {
                 type: "signup",
                 status: true,
             });
             try {
                 const response = await axios.post("api/register", user);
-                localStorage.setItem('token', response.data.token)
+                localStorage.setItem("token", response.data.token);
                 commit("setUser", response.data.user);
                 commit("setLoading", {
                     type: "signup",
                     status: false,
                 });
                 commit("clearErrors");
-                router.push({name : "Home"})
-              } catch (e) {
+                router.push({ name: "Home" });
+            } catch (e) {
                 commit("setLoading", {
                     type: "signup",
                     status: false,
@@ -71,16 +71,15 @@ export default {
                     error: e.response.data.errors,
                     type: "signup",
                 });
-                
-              }
+            }
         },
 
-        async logout({commit}){
+        async logout({ commit }) {
             commit("setLoading", {
                 type: "autoLogin",
                 status: true,
             });
-            let token = localStorage.getItem("token");  
+            let token = localStorage.getItem("token");
             try {
                 let res = await axios.get("api/logout", {
                     headers: {
@@ -88,14 +87,14 @@ export default {
                     },
                 });
                 console.log(res);
-                localStorage.removeItem('token');
+                localStorage.removeItem("token");
                 commit("setUser", null);
                 commit("setLoggedIn", false);
                 commit("setLoading", {
                     type: "autoLogin",
                     status: false,
                 });
-                router.push({name : 'Login'})
+                router.push({ name: "Login" });
             } catch (e) {
                 commit("setError", {
                     error: e.response.data,
@@ -107,7 +106,6 @@ export default {
                 });
             }
         },
-
 
         async fetchUser({ commit }) {
             commit("setLoading", {
@@ -128,7 +126,7 @@ export default {
                 });
             } catch (e) {
                 commit("setError", e.response.data);
-                localStorage.removeItem('token');
+                localStorage.removeItem("token");
                 commit("setLoading", {
                     type: "autoLogin",
                     status: false,
@@ -147,8 +145,8 @@ export default {
             state.error = error;
             state.isLoggedIn = false;
         },
-        setLoggedIn : (state, status) => {
-            state.isLoggedIn = status
+        setLoggedIn: (state, status) => {
+            state.isLoggedIn = status;
         },
         clearErrors: (state) => {
             state.error = {
