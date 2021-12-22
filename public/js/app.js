@@ -6630,6 +6630,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       state.loading = status;
     },
     setError: function setError(state, error) {
+      // if(error.message == 'Unauthenticated.'){
+      //     state.user = null,
+      //     state.isLoggedIn =false,
+      //     localStorage.removeItem('token');
+      // }
       state.error = error;
     },
     deleteProductWithId: function deleteProductWithId(state, id) {

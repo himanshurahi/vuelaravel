@@ -119,6 +119,11 @@ export default {
             state.loading = status;
         },
         setError: (state, error) => {
+            // if(error.message == 'Unauthenticated.'){
+            //     state.user = null,
+            //     state.isLoggedIn =false,
+            //     localStorage.removeItem('token');
+            // }
             state.error = error;
         },
         deleteProductWithId: (state, id) => {
