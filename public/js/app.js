@@ -5546,6 +5546,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -5610,13 +5617,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       title: "",
       description: ""
     };
-  }
+  },
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)("products", ["loading", "error"]),
+  methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)("products", ["saveProduct"])), {}, {
+    handleSubmit: function handleSubmit() {
+      this.saveProduct({
+        title: this.title,
+        description: this.description
+      });
+    }
+  })
 });
 
 /***/ }),
@@ -6392,6 +6419,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     loading: function loading(state) {
       return state.loading;
+    },
+    error: function error(state) {
+      return state.error;
     }
   },
   actions: {
@@ -6445,6 +6475,60 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         }, _callee, null, [[3, 12]]);
+      }))();
+    },
+    saveProduct: function saveProduct(_ref2, product) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var commit, token, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                commit = _ref2.commit;
+                commit("setLoading", {
+                  type: "saveProduct",
+                  status: true
+                });
+                token = localStorage.getItem("token");
+                _context2.prev = 3;
+                _context2.next = 6;
+                return axios.post("api/products", product, {
+                  headers: {
+                    Authorization: "Bearer ".concat(token)
+                  }
+                });
+
+              case 6:
+                res = _context2.sent;
+                commit("setLoading", {
+                  type: "saveProduct",
+                  status: false
+                });
+                commit("clearErrors");
+                _routes_routes__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+                  name: "Home"
+                });
+                _context2.next = 16;
+                break;
+
+              case 12:
+                _context2.prev = 12;
+                _context2.t0 = _context2["catch"](3);
+                commit("setError", {
+                  error: _context2.t0.response.data,
+                  type: "saveProduct"
+                });
+                commit("setLoading", {
+                  type: "saveProduct",
+                  status: false
+                });
+
+              case 16:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, null, [[3, 12]]);
       }))();
     }
   },
@@ -31111,6 +31195,22 @@ var render = function () {
         _c("div", { staticClass: "card" }, [
           _c("div", { staticClass: "card-header" }, [_vm._v("Add Product")]),
           _vm._v(" "),
+          _vm.error.error
+            ? _c("div", { staticClass: "alert bg bg-danger text-white" }, [
+                _c(
+                  "ul",
+                  _vm._l(_vm.error.error, function (error) {
+                    return _c("li", { key: error[0] }, [
+                      _vm._v(
+                        "\n              " + _vm._s(error[0]) + "\n            "
+                      ),
+                    ])
+                  }),
+                  0
+                ),
+              ])
+            : _vm._e(),
+          _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
             _c(
               "form",
@@ -31139,10 +31239,9 @@ var render = function () {
                       staticClass: "form-control",
                       attrs: {
                         id: "email",
-                        type: "email",
+                        type: "text",
                         name: "email",
                         value: "",
-                        required: "",
                         autocomplete: "email",
                         autofocus: "",
                       },
@@ -31177,7 +31276,6 @@ var render = function () {
                         id: "password",
                         type: "text",
                         name: "password",
-                        required: "",
                         autocomplete: "current-password",
                       },
                       domProps: { value: _vm.description },
@@ -31193,7 +31291,36 @@ var render = function () {
                   ]),
                 ]),
                 _vm._v(" "),
-                _vm._m(0),
+                _c("div", { staticClass: "row mb-0" }, [
+                  _c("div", { staticClass: "col-md-8 offset-md-4" }, [
+                    _vm.loading.type == "saveProduct" &&
+                    _vm.loading.status == true
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "button", disabled: "" },
+                          },
+                          [
+                            _c("span", {
+                              staticClass: "spinner-border spinner-border-sm",
+                              attrs: { role: "status", "aria-hidden": "true" },
+                            }),
+                            _vm._v(
+                              "\n                  Saving...\n                "
+                            ),
+                          ]
+                        )
+                      : _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "submit" },
+                          },
+                          [_vm._v("\n                  Save\n                ")]
+                        ),
+                  ]),
+                ]),
               ]
             ),
           ]),
@@ -31202,37 +31329,7 @@ var render = function () {
     ]),
   ])
 }
-var staticRenderFns = [
-  function () {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "row mb-0" }, [
-      _c("div", { staticClass: "col-md-8 offset-md-4" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary",
-            attrs: { type: "button", disabled: "" },
-          },
-          [
-            _c("span", {
-              staticClass: "spinner-border spinner-border-sm",
-              attrs: { role: "status", "aria-hidden": "true" },
-            }),
-            _vm._v("\n                  Saving...\n                "),
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-          [_vm._v("\n                  Save\n                ")]
-        ),
-      ]),
-    ])
-  },
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

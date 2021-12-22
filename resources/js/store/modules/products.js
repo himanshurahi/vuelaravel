@@ -2,7 +2,6 @@ import router from '../../routes/routes'
 export default {
     namespaced: true,
     state: {
-      
         products: [],
         loading: {
             type: "",
@@ -15,7 +14,8 @@ export default {
     },
     getters: {
         getProducts: state => state.products,
-        loading : state => state.loading
+        loading: state => state.loading,
+        error: state => state.error
     },
     actions: {
         async fetchProducts({commit}) {
@@ -43,6 +43,37 @@ export default {
                 });
                 commit("setLoading", {
                     type: "products",
+                    status: false
+                });
+            }
+        },
+        async saveProduct({
+            commit
+        }, product) {
+            commit("setLoading", {
+                type: "saveProduct",
+                status: true
+            });
+            let token = localStorage.getItem("token");
+            try {
+                let res = await axios.post("api/products", product, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                commit("setLoading", {
+                    type: "saveProduct",
+                    status: false
+                });
+                commit("clearErrors");
+                router.push({name: "Home"})
+            } catch (e) {
+                commit("setError", {
+                    error: e.response.data,
+                    type: "saveProduct"
+                });
+                commit("setLoading", {
+                    type: "saveProduct",
                     status: false
                 });
             }
