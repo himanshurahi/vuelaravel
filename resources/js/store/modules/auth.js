@@ -128,6 +128,7 @@ export default {
                 });
             } catch (e) {
                 commit("setError", e.response.data);
+                localStorage.removeItem('token');
                 commit("setLoading", {
                     type: "autoLogin",
                     status: false,

@@ -5874,24 +5874,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _components_ExampleComponent2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/ExampleComponent2 */ "./resources/js/components/ExampleComponent2.vue");
 /* harmony import */ var _components_Login__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Login */ "./resources/js/components/Login.vue");
 /* harmony import */ var _components_Products_ProductsList__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Products/ProductsList */ "./resources/js/components/Products/ProductsList.vue");
 /* harmony import */ var _components_Register__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Register */ "./resources/js/components/Register.vue");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store */ "./resources/js/store/index.js");
 
 
 
 
 
 
-vue__WEBPACK_IMPORTED_MODULE_4__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]); // that is not in tut.
+
+vue__WEBPACK_IMPORTED_MODULE_5__["default"].use(vue_router__WEBPACK_IMPORTED_MODULE_6__["default"]); // that is not in tut.
 
 var routes = [{
   path: "/",
   component: _components_Products_ProductsList__WEBPACK_IMPORTED_MODULE_2__["default"],
-  name: "Home"
+  name: "Home",
+  beforeEnter: requireLogin
 }, {
   path: "/second",
   component: _components_ExampleComponent2__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -5905,10 +5908,23 @@ var routes = [{
   component: _components_Register__WEBPACK_IMPORTED_MODULE_3__["default"],
   name: "Register"
 }];
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__["default"]({
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_6__["default"]({
   routes: routes,
   mode: "history"
 });
+
+function requireLogin(to, from, next) {
+  var authenticated = localStorage.getItem('token');
+
+  if (authenticated) {
+    next(true);
+  } else {
+    next({
+      path: '/login'
+    });
+  }
+}
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
 
 /***/ }),
@@ -6176,19 +6192,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   type: "autoLogin",
                   status: false
                 });
-                _context4.next = 15;
+                _context4.next = 16;
                 break;
 
               case 11:
                 _context4.prev = 11;
                 _context4.t0 = _context4["catch"](3);
                 commit("setError", _context4.t0.response.data);
+                localStorage.removeItem('token');
                 commit("setLoading", {
                   type: "autoLogin",
                   status: false
                 });
 
-              case 15:
+              case 16:
               case "end":
                 return _context4.stop();
             }
@@ -30438,7 +30455,7 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container mt-3" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-8" }, [
         _c("div", { staticClass: "card" }, [

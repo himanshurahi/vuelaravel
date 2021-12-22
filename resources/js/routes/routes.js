@@ -4,6 +4,7 @@ import ExampleComponent2 from "../components/ExampleComponent2"
 import Login from "../components/Login"
 import ProductsList from "../components/Products/ProductsList"
 import Register from "../components/Register"
+import store from "../store";
 
 
 Vue.use(VueRouter) // that is not in tut.
@@ -12,7 +13,8 @@ const routes = [
     {
         path: "/",
         component: ProductsList,
-        name: "Home"
+        name: "Home",
+        beforeEnter: requireLogin
     }, {
         path: "/second",
         component: ExampleComponent2,
@@ -21,8 +23,7 @@ const routes = [
         path: "/login",
         component: Login,
         name: "Login"
-    },
-    {
+    }, {
         path: "/register",
         component: Register,
         name: "Register"
@@ -30,5 +31,17 @@ const routes = [
 ];
 
 const router = new VueRouter({routes, mode: "history"})
+
+function requireLogin(to, from, next) {
+
+    const authenticated = localStorage.getItem('token');
+    if (authenticated) {
+        next(true);
+    } else {
+        next({
+            path: '/login',
+        })
+    }
+}
 
 export default router
