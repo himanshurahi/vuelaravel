@@ -5,7 +5,7 @@
         <div class="card">
           <div class="card-header">Register</div>
           <div class="card-body">
-            {{getError}}
+            {{ status.signup }}
             <form @submit.prevent="handleSubmit">
               <div class="row mb-3">
                 <label for="name" class="col-md-4 col-form-label text-md-right"
@@ -35,7 +35,7 @@
                     id="email"
                     type="email"
                     class="form-control"
-                    :class="{'is-invalid' : getError.type == 'signup' && getError.error.email}"
+                    :class="{ 'is-invalid': status.signup.error.email }"
                     name="email"
                     value=""
                     required
@@ -43,7 +43,7 @@
                     v-model="email"
                   />
                   <span class="invalid-feedback" role="alert">
-                    {{getError.type == 'signup' && getError.error.email && getError.error.email[0]}}
+                   <strong> {{ status.signup.error.email &&  status.signup.error.email[0] }}</strong>
                   </span>
                 </div>
               </div>
@@ -60,15 +60,15 @@
                     id="password"
                     type="password"
                     class="form-control"
-                      :class="{'is-invalid' : getError.type == 'signup' && getError.error.password}"
+                     :class="{ 'is-invalid': status.signup.error.password }"
                     name="password"
                     required
                     autocomplete="new-password"
                     v-model="password"
                   />
                   <span class="invalid-feedback" role="alert">
-                     {{getError.type == 'signup' &&  getError.error.password && getError.error.password[0] }}
-                  </span>
+                     <strong> {{ status.signup.error.password &&  status.signup.error.password[0] }}</strong>
+                    </span>
                 </div>
               </div>
 
@@ -94,7 +94,7 @@
 
               <div class="row mb-0">
                 <div class="col-md-6 offset-md-4">
-                  <button class="btn btn-primary" type="button" disabled v-if="loading.type == 'signup' && loading.status == true">
+                  <button class="btn btn-primary" type="button" disabled v-if="status.signup.loading">
                     <span
                       class="spinner-border spinner-border-sm"
                       role="status"
@@ -126,7 +126,7 @@ export default {
       password_confirmation: "",
     };
   },
-  computed: mapGetters(["getError", "loading"]),
+  computed: mapGetters(["status"]),
   methods: {
     ...mapActions(["Signup"]),
     handleSubmit() {

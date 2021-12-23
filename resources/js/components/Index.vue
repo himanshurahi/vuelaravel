@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Spinner v-if="loading['type'] == 'autoLogin' && loading['status'] == true" />
+    <Spinner v-if="status.fetchUser.loading == true || status.logout.loading == true" />
     <Navbar />
     <router-view> </router-view>
   </div>
@@ -19,7 +19,7 @@ export default {
   },
 
   components: { Navbar, Spinner },
-  computed : mapGetters(['loading']),
+  computed : mapGetters(['status']),
   methods: {
     ...mapActions(["fetchUser"]),
   },

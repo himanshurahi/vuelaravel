@@ -6,7 +6,6 @@
           <div class="card-header">Login</div>
           <div class="card-body">
             <form @submit.prevent="handleSubmit">
-              {{getError}}
               <div class="row mb-3">
                 <label for="email" class="col-md-4 col-form-label text-md-right"
                   >Email</label
@@ -17,7 +16,7 @@
                     id="email"
                     type="email"
                     class="form-control"
-                    :class="{ 'is-invalid': getError.type == 'login'}"
+                    :class="{'is-invalid' : status.login.error.email}"
                     name="email"
                     value=""
                     required
@@ -26,7 +25,7 @@
                     v-model="email"
                   />
                   <span class="invalid-feedback" role="alert">
-                    <strong>{{ getError.type == 'login' && getError.error.email[0] }}</strong>
+                    <strong>{{status.login.error.email && status.login.error.email[0]}}</strong>
                   </span>
                 </div>
               </div>
@@ -53,7 +52,7 @@
               <div class="row mb-0">
                 <div class="col-md-8 offset-md-4">
                 
-                  <button class="btn btn-primary" type="button" disabled v-if="loading.type == 'login' && loading.status == true">
+                  <button class="btn btn-primary" type="button" disabled v-if="status.login.loading == true" >
                     <span
                       class="spinner-border spinner-border-sm"
                       role="status"
@@ -61,7 +60,7 @@
                     ></span>
                     Loading...
                   </button>
-                    <button type="submit" class="btn btn-primary" v-else >
+                    <button type="submit" class="btn btn-primary" v-else  >
                     Login
                   </button>
                 </div>
@@ -83,7 +82,7 @@ export default {
       password: "",
     };
   },
-  computed : mapGetters(['getError', 'loading']),
+  computed : mapGetters(['status']),
   methods: {
     ...mapActions(['login']),
     handleSubmit() {

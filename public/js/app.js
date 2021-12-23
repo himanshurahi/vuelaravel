@@ -5304,7 +5304,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     Navbar: _components_Navbar_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     Spinner: _components_Spinner_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapGetters)(['loading']),
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapGetters)(['status']),
   methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)(["fetchUser"])),
   mounted: function mounted() {
     this.fetchUser(); // this.loading = true
@@ -5422,7 +5422,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5431,7 +5430,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       password: ""
     };
   },
-  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['getError', 'loading']),
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(['status']),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(['login'])), {}, {
     handleSubmit: function handleSubmit() {
       this.login({
@@ -5904,7 +5903,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       password_confirmation: ""
     };
   },
-  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["getError", "loading"]),
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["status"]),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)(["Signup"])), {}, {
     handleSubmit: function handleSubmit() {
       this.Signup({
@@ -6155,6 +6154,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   state: {
     user: null,
     isLoggedIn: false,
+    status: {
+      login: {
+        loading: false,
+        error: ""
+      },
+      signup: {
+        loading: false,
+        error: ""
+      },
+      fetchUser: {
+        loading: false,
+        error: ""
+      },
+      logout: {
+        loading: false,
+        error: ""
+      }
+    },
     loading: {
       type: "",
       status: false
@@ -6171,11 +6188,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     isLoggedIn: function isLoggedIn(state) {
       return state.isLoggedIn;
     },
-    loading: function loading(state) {
-      return state.loading;
-    },
-    getError: function getError(state) {
-      return state.error;
+    status: function status(state) {
+      return state.status;
     }
   },
   actions: {
@@ -6188,7 +6202,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref.commit;
                 commit("setLoading", {
-                  type: "login",
+                  dataName: 'login',
                   status: true
                 });
                 _context.prev = 2;
@@ -6201,7 +6215,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 commit("setUser", response.data.user);
                 localStorage.setItem("token", response.data.token);
                 commit("setLoading", {
-                  type: "login",
+                  dataName: 'login',
                   status: false
                 });
                 commit("clearErrors");
@@ -6215,11 +6229,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.prev = 14;
                 _context.t0 = _context["catch"](2);
                 commit("setError", {
-                  error: _context.t0.response.data,
-                  type: "login"
+                  dataName: 'login',
+                  error: _context.t0.response.data
                 });
                 commit("setLoading", {
-                  type: "login",
+                  dataName: 'login',
                   status: false
                 });
 
@@ -6240,7 +6254,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref2.commit;
                 commit("setLoading", {
-                  type: "signup",
+                  dataName: 'signup',
                   status: true
                 });
                 _context2.prev = 2;
@@ -6252,7 +6266,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 localStorage.setItem("token", response.data.token);
                 commit("setUser", response.data.user);
                 commit("setLoading", {
-                  type: "signup",
+                  dataName: 'signup',
                   status: false
                 });
                 commit("clearErrors");
@@ -6266,12 +6280,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context2.prev = 13;
                 _context2.t0 = _context2["catch"](2);
                 commit("setLoading", {
-                  type: "signup",
+                  dataName: 'signup',
                   status: false
                 });
                 commit("setError", {
-                  error: _context2.t0.response.data,
-                  type: "signup"
+                  dataName: 'signup',
+                  error: _context2.t0.response.data
                 });
 
               case 17:
@@ -6291,7 +6305,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref3.commit;
                 commit("setLoading", {
-                  type: "autoLogin",
+                  dataName: 'logout',
                   status: true
                 });
                 token = localStorage.getItem("token");
@@ -6310,7 +6324,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 commit("setUser", null);
                 commit("setLoggedIn", false);
                 commit("setLoading", {
-                  type: "autoLogin",
+                  dataName: 'logout',
                   status: false
                 });
                 _routes_routes__WEBPACK_IMPORTED_MODULE_1__["default"].push({
@@ -6323,11 +6337,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context3.prev = 15;
                 _context3.t0 = _context3["catch"](3);
                 commit("setError", {
-                  error: _context3.t0.response.data,
-                  type: "logout"
+                  dataName: 'logout',
+                  error: _context3.t0.response.data
                 });
                 commit("setLoading", {
-                  type: "autoLogin",
+                  dataName: 'logout',
                   status: false
                 });
 
@@ -6348,7 +6362,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref4.commit;
                 commit("setLoading", {
-                  type: "autoLogin",
+                  dataName: 'fetchUser',
                   status: true
                 });
                 token = localStorage.getItem("token");
@@ -6364,7 +6378,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 res = _context4.sent;
                 commit("setUser", res.data);
                 commit("setLoading", {
-                  type: "autoLogin",
+                  dataName: 'fetchUser',
                   status: false
                 });
                 _context4.next = 16;
@@ -6373,10 +6387,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 11:
                 _context4.prev = 11;
                 _context4.t0 = _context4["catch"](3);
-                commit("setError", _context4.t0.response.data);
+                commit("setError", {
+                  dataName: 'fetchUser',
+                  error: _context4.t0.response.data
+                });
                 localStorage.removeItem("token");
                 commit("setLoading", {
-                  type: "autoLogin",
+                  dataName: 'fetchUser',
                   status: false
                 });
 
@@ -6390,15 +6407,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   },
   mutations: {
-    setLoading: function setLoading(state, status) {
-      state.loading = status;
-    },
     setUser: function setUser(state, user) {
       state.user = user, state.isLoggedIn = true;
     },
-    setError: function setError(state, error) {
-      state.error = error;
-      state.isLoggedIn = false;
+    setLoading: function setLoading(state, _ref5) {
+      var dataName = _ref5.dataName,
+          status = _ref5.status;
+      state.status[dataName].loading = status;
+    },
+    setError: function setError(state, _ref6) {
+      var dataName = _ref6.dataName,
+          error = _ref6.error;
+      state.status[dataName].error = error;
     },
     setLoggedIn: function setLoggedIn(state, status) {
       state.isLoggedIn = status;
@@ -30919,7 +30939,7 @@ var render = function () {
   return _c(
     "div",
     [
-      _vm.loading["type"] == "autoLogin" && _vm.loading["status"] == true
+      _vm.status.fetchUser.loading == true || _vm.status.logout.loading == true
         ? _c("Spinner")
         : _vm._e(),
       _vm._v(" "),
@@ -30971,9 +30991,6 @@ var render = function () {
                 },
               },
               [
-                _vm._v(
-                  "\n            " + _vm._s(_vm.getError) + "\n            "
-                ),
                 _c("div", { staticClass: "row mb-3" }, [
                   _c(
                     "label",
@@ -30995,7 +31012,7 @@ var render = function () {
                         },
                       ],
                       staticClass: "form-control",
-                      class: { "is-invalid": _vm.getError.type == "login" },
+                      class: { "is-invalid": _vm.status.login.error.email },
                       attrs: {
                         id: "email",
                         type: "email",
@@ -31026,8 +31043,8 @@ var render = function () {
                         _c("strong", [
                           _vm._v(
                             _vm._s(
-                              _vm.getError.type == "login" &&
-                                _vm.getError.error.email[0]
+                              _vm.status.login.error.email &&
+                                _vm.status.login.error.email[0]
                             )
                           ),
                         ]),
@@ -31079,7 +31096,7 @@ var render = function () {
                 _vm._v(" "),
                 _c("div", { staticClass: "row mb-0" }, [
                   _c("div", { staticClass: "col-md-8 offset-md-4" }, [
-                    _vm.loading.type == "login" && _vm.loading.status == true
+                    _vm.status.login.loading == true
                       ? _c(
                           "button",
                           {
@@ -31614,7 +31631,7 @@ var render = function () {
           _c("div", { staticClass: "card-header" }, [_vm._v("Register")]),
           _vm._v(" "),
           _c("div", { staticClass: "card-body" }, [
-            _vm._v("\n          " + _vm._s(_vm.getError) + "\n          "),
+            _vm._v("\n          " + _vm._s(_vm.status.signup) + "\n          "),
             _c(
               "form",
               {
@@ -31690,11 +31707,7 @@ var render = function () {
                         },
                       ],
                       staticClass: "form-control",
-                      class: {
-                        "is-invalid":
-                          _vm.getError.type == "signup" &&
-                          _vm.getError.error.email,
-                      },
+                      class: { "is-invalid": _vm.status.signup.error.email },
                       attrs: {
                         id: "email",
                         type: "email",
@@ -31721,15 +31734,15 @@ var render = function () {
                         attrs: { role: "alert" },
                       },
                       [
-                        _vm._v(
-                          "\n                  " +
-                            _vm._s(
-                              _vm.getError.type == "signup" &&
-                                _vm.getError.error.email &&
-                                _vm.getError.error.email[0]
-                            ) +
-                            "\n                "
-                        ),
+                        _c("strong", [
+                          _vm._v(
+                            " " +
+                              _vm._s(
+                                _vm.status.signup.error.email &&
+                                  _vm.status.signup.error.email[0]
+                              )
+                          ),
+                        ]),
                       ]
                     ),
                   ]),
@@ -31756,11 +31769,7 @@ var render = function () {
                         },
                       ],
                       staticClass: "form-control",
-                      class: {
-                        "is-invalid":
-                          _vm.getError.type == "signup" &&
-                          _vm.getError.error.password,
-                      },
+                      class: { "is-invalid": _vm.status.signup.error.password },
                       attrs: {
                         id: "password",
                         type: "password",
@@ -31786,15 +31795,15 @@ var render = function () {
                         attrs: { role: "alert" },
                       },
                       [
-                        _vm._v(
-                          "\n                   " +
-                            _vm._s(
-                              _vm.getError.type == "signup" &&
-                                _vm.getError.error.password &&
-                                _vm.getError.error.password[0]
-                            ) +
-                            "\n                "
-                        ),
+                        _c("strong", [
+                          _vm._v(
+                            " " +
+                              _vm._s(
+                                _vm.status.signup.error.password &&
+                                  _vm.status.signup.error.password[0]
+                              )
+                          ),
+                        ]),
                       ]
                     ),
                   ]),
@@ -31843,7 +31852,7 @@ var render = function () {
                 _vm._v(" "),
                 _c("div", { staticClass: "row mb-0" }, [
                   _c("div", { staticClass: "col-md-6 offset-md-4" }, [
-                    _vm.loading.type == "signup" && _vm.loading.status == true
+                    _vm.status.signup.loading
                       ? _c(
                           "button",
                           {
