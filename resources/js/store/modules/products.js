@@ -3,142 +3,136 @@ export default {
     namespaced: true,
     state: {
         products: [],
-        loading: {
-            type: "",
-            status: false,
-            id: null
+        status: {
+            products: {
+                loading: false,
+                error: "",
+            },
+            deleteProduct: {
+                loading: false,
+                error: "",
+                id: "",
+            },
+            saveProduct: {
+                loading: false,
+                error: "",
+            },
         },
-        error: {
-            error: "",
-            type: ""
-        },
-        productsLoading: false
     },
     getters: {
         getProducts: (state) => state.products,
-        loading: (state) => state.loading,
-        error: (state) => state.error,
-        productsLoading: (state) => state.productsLoading
+        status: (state) => state.status,
     },
     actions: {
-        async fetchProducts({commit}) {
-            commit("productsLoading", true);
+        async fetchProducts({ commit }) {
+            commit("setLoading", { dataName: "products", status: true });
             let token = localStorage.getItem("token");
             try {
                 let res = await axios.get("api/products", {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
                 console.log(res.data);
                 commit("setProducts", res.data);
-                commit("productsLoading", false);
+                commit("setLoading", { dataName: "products", status: false });
             } catch (e) {
                 commit("setError", {
+                    dataName: "products",
                     error: e.response.data,
-                    type: "products"
                 });
-                commit("productsLoading", false);
+                commit("setLoading", { dataName: "products", status: false });
             }
         },
-        async saveProduct({
-            commit
-        }, product) {
-            commit("setLoading", {
-                type: "saveProduct",
-                status: true
-            });
+        async saveProduct({ commit }, product) {
+            commit("setLoading", { dataName: "saveProduct", status: true });
             let token = localStorage.getItem("token");
             try {
                 let res = await axios.post("api/products", product, {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
                 commit("setLoading", {
-                    type: "saveProduct",
-                    status: false
+                    dataName: "saveProduct",
+                    status: false,
                 });
                 commit("clearErrors");
-                router.push({name: "Home"});
+                router.push({ name: "Home" });
             } catch (e) {
                 commit("setError", {
+                    dataName: "saveProduct",
                     error: e.response.data,
-                    type: "saveProduct"
                 });
                 commit("setLoading", {
-                    type: "saveProduct",
-                    status: false
+                    dataName: "saveProduct",
+                    status: false,
                 });
             }
         },
 
-        async deleteProduct({
-            commit
-        }, id) {
+        async deleteProduct({ commit }, id) {
             commit("setLoading", {
-                type: "deleteProduct",
+                dataName: "deleteProduct",
                 status: true,
-                id: id
+                id: id,
             });
             let token = localStorage.getItem("token");
             try {
                 let res = await axios.delete("api/products/" + id, {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 });
-
+                commit ("deleteProductWithId", id)
                 commit("setLoading", {
-                    type: "deleteProduct",
+                    dataName: "deleteProduct",
                     status: false,
-                    id: id
+                    id: id,
                 });
-                commit('deleteProductWithId', id)
             } catch (e) {
                 commit("setError", {
+                    dataName: "deleteProduct",
                     error: e.response,
-                    type: "deleteProduct"
                 });
                 commit("setLoading", {
-                    type: "deleteProduct",
+                    dataName: "deleteProduct",
                     status: false,
-                    id: id
-
+                    id: id,
                 });
             }
-        }
-
+        },
     },
     mutations: {
         setProducts: (state, products) => {
             state.products = products;
         },
 
-        setLoading: (state, status) => {
-            state.loading = status;
+        setLoading: (state, { dataName, status, id }) => {
+            if (id) {
+                state.status[dataName].id = id;
+            }
+            state.status[dataName].loading = status;
         },
-        setError: (state, error) => {
-            // if(error.message == 'Unauthenticated.'){
-            //     state.user = null,
-            //     state.isLoggedIn =false,
-            //     localStorage.removeItem('token');
-            // }
-            state.error = error;
+
+        setError: (state, { dataName, error }) => {
+            state.status[dataName].error = error;
         },
         deleteProductWithId: (state, id) => {
-            let updatedProducts = state.products.filter(product => product.id != id);
+            let updatedProducts = state.products.filter(
+                (product) => product.id != id
+            );
             state.products = updatedProducts;
         },
         productsLoading: (state, status) => {
-            state.productsLoading = status
+            state.productsLoading = status;
         },
 
         clearErrors: (state) => {
             state.error = {
                 error: "",
-                type: ""
+                type: "",
             };
-        }
-    }
+        },
+    },
 };

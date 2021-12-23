@@ -4,7 +4,8 @@
       <router-link :to="{ name: 'AddProduct' }">
         <button type="button" class="btn btn-success">Add Product</button>
       </router-link>
-      <div class="row" v-if="!productsLoading">
+      <div class="row" v-if="!status.products.loading" >
+       
         <div class="col-4" v-for="product in getProducts" :key="product.id">
           <!-- <div class="spinner-border" role="status"></div> -->
           <div class="card" style="width: 18rem">
@@ -20,11 +21,7 @@
                 class="btn btn-danger"
                 type="button"
                 disabled
-                v-if="
-                  loading.type == 'deleteProduct' &&
-                  loading.status == true &&
-                  loading.id == product.id
-                "
+                v-if="status.deleteProduct.loading && status.deleteProduct.id == product.id"
               >
                 <span
                   class="spinner-border spinner-border-sm"
@@ -44,13 +41,13 @@
           </div>
         </div>
       </div>
-      <div class="row" v-if="productsLoading">
+      <div class="row" v-if="status.products.loading" >
         <div class="col-12 text-center">
           <h2>Please Wait..</h2>
         </div>
       </div>
 
-      <div class="row" v-if="!productsLoading && getProducts.length == 0">
+      <div class="row" v-if="!status.products.loading && getProducts.length == 0">
         <div class="col-12 text-center">
           <h2>No products Found.</h2>
         </div>
@@ -75,8 +72,7 @@ export default {
 
   computed: mapGetters("products", [
     "getProducts",
-    "loading",
-    "productsLoading",
+    "status"
   ]),
   methods: {
     ...mapActions("products", ["fetchProducts", "deleteProduct"]),

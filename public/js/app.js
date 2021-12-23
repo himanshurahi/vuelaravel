@@ -5626,8 +5626,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5636,7 +5634,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       description: ""
     };
   },
-  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)("products", ["loading", "error"]),
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)("products", ["status"]),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)("products", ["saveProduct"])), {}, {
     handleSubmit: function handleSubmit() {
       this.saveProduct({
@@ -5725,9 +5723,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -5751,7 +5746,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }]
     };
   },
-  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)("products", ["getProducts", "loading", "productsLoading"]),
+  computed: (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)("products", ["getProducts", "status"]),
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapActions)("products", ["fetchProducts", "deleteProduct"])), {}, {
     handleDelete: function handleDelete(id) {
       this.deleteProduct(id);
@@ -6444,29 +6439,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   namespaced: true,
   state: {
     products: [],
-    loading: {
-      type: "",
-      status: false,
-      id: null
-    },
-    error: {
-      error: "",
-      type: ""
-    },
-    productsLoading: false
+    status: {
+      products: {
+        loading: false,
+        error: ""
+      },
+      deleteProduct: {
+        loading: false,
+        error: "",
+        id: ""
+      },
+      saveProduct: {
+        loading: false,
+        error: ""
+      }
+    }
   },
   getters: {
     getProducts: function getProducts(state) {
       return state.products;
     },
-    loading: function loading(state) {
-      return state.loading;
-    },
-    error: function error(state) {
-      return state.error;
-    },
-    productsLoading: function productsLoading(state) {
-      return state.productsLoading;
+    status: function status(state) {
+      return state.status;
     }
   },
   actions: {
@@ -6478,7 +6472,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 commit = _ref.commit;
-                commit("productsLoading", true);
+                commit("setLoading", {
+                  dataName: "products",
+                  status: true
+                });
                 token = localStorage.getItem("token");
                 _context.prev = 3;
                 _context.next = 6;
@@ -6492,7 +6489,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 res = _context.sent;
                 console.log(res.data);
                 commit("setProducts", res.data);
-                commit("productsLoading", false);
+                commit("setLoading", {
+                  dataName: "products",
+                  status: false
+                });
                 _context.next = 16;
                 break;
 
@@ -6500,10 +6500,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.prev = 12;
                 _context.t0 = _context["catch"](3);
                 commit("setError", {
-                  error: _context.t0.response.data,
-                  type: "products"
+                  dataName: "products",
+                  error: _context.t0.response.data
                 });
-                commit("productsLoading", false);
+                commit("setLoading", {
+                  dataName: "products",
+                  status: false
+                });
 
               case 16:
               case "end":
@@ -6522,7 +6525,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref2.commit;
                 commit("setLoading", {
-                  type: "saveProduct",
+                  dataName: "saveProduct",
                   status: true
                 });
                 token = localStorage.getItem("token");
@@ -6537,7 +6540,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 6:
                 res = _context2.sent;
                 commit("setLoading", {
-                  type: "saveProduct",
+                  dataName: "saveProduct",
                   status: false
                 });
                 commit("clearErrors");
@@ -6551,11 +6554,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context2.prev = 12;
                 _context2.t0 = _context2["catch"](3);
                 commit("setError", {
-                  error: _context2.t0.response.data,
-                  type: "saveProduct"
+                  dataName: "saveProduct",
+                  error: _context2.t0.response.data
                 });
                 commit("setLoading", {
-                  type: "saveProduct",
+                  dataName: "saveProduct",
                   status: false
                 });
 
@@ -6576,7 +6579,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref3.commit;
                 commit("setLoading", {
-                  type: "deleteProduct",
+                  dataName: "deleteProduct",
                   status: true,
                   id: id
                 });
@@ -6591,12 +6594,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 6:
                 res = _context3.sent;
+                commit("deleteProductWithId", id);
                 commit("setLoading", {
-                  type: "deleteProduct",
+                  dataName: "deleteProduct",
                   status: false,
                   id: id
                 });
-                commit('deleteProductWithId', id);
                 _context3.next = 15;
                 break;
 
@@ -6604,11 +6607,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context3.prev = 11;
                 _context3.t0 = _context3["catch"](3);
                 commit("setError", {
-                  error: _context3.t0.response,
-                  type: "deleteProduct"
+                  dataName: "deleteProduct",
+                  error: _context3.t0.response
                 });
                 commit("setLoading", {
-                  type: "deleteProduct",
+                  dataName: "deleteProduct",
                   status: false,
                   id: id
                 });
@@ -6626,16 +6629,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     setProducts: function setProducts(state, products) {
       state.products = products;
     },
-    setLoading: function setLoading(state, status) {
-      state.loading = status;
+    setLoading: function setLoading(state, _ref4) {
+      var dataName = _ref4.dataName,
+          status = _ref4.status,
+          id = _ref4.id;
+
+      if (id) {
+        state.status[dataName].id = id;
+      }
+
+      state.status[dataName].loading = status;
     },
-    setError: function setError(state, error) {
-      // if(error.message == 'Unauthenticated.'){
-      //     state.user = null,
-      //     state.isLoggedIn =false,
-      //     localStorage.removeItem('token');
-      // }
-      state.error = error;
+    setError: function setError(state, _ref5) {
+      var dataName = _ref5.dataName,
+          error = _ref5.error;
+      state.status[dataName].error = error;
     },
     deleteProductWithId: function deleteProductWithId(state, id) {
       var updatedProducts = state.products.filter(function (product) {
@@ -31303,11 +31311,11 @@ var render = function () {
         _c("div", { staticClass: "card" }, [
           _c("div", { staticClass: "card-header" }, [_vm._v("Add Product")]),
           _vm._v(" "),
-          _vm.error.error
+          _vm.status.saveProduct.error
             ? _c("div", { staticClass: "alert bg bg-danger text-white" }, [
                 _c(
                   "ul",
-                  _vm._l(_vm.error.error, function (error) {
+                  _vm._l(_vm.status.saveProduct.error, function (error) {
                     return _c("li", { key: error[0] }, [
                       _vm._v(
                         "\n              " + _vm._s(error[0]) + "\n            "
@@ -31401,8 +31409,7 @@ var render = function () {
                 _vm._v(" "),
                 _c("div", { staticClass: "row mb-0" }, [
                   _c("div", { staticClass: "col-md-8 offset-md-4" }, [
-                    _vm.loading.type == "saveProduct" &&
-                    _vm.loading.status == true
+                    _vm.status.saveProduct.loading
                       ? _c(
                           "button",
                           {
@@ -31473,7 +31480,7 @@ var render = function () {
           ),
         ]),
         _vm._v(" "),
-        !_vm.productsLoading
+        !_vm.status.products.loading
           ? _c(
               "div",
               { staticClass: "row" },
@@ -31503,9 +31510,8 @@ var render = function () {
                           [_vm._v("Buy Now")]
                         ),
                         _vm._v(" "),
-                        _vm.loading.type == "deleteProduct" &&
-                        _vm.loading.status == true &&
-                        _vm.loading.id == product.id
+                        _vm.status.deleteProduct.loading &&
+                        _vm.status.deleteProduct.id == product.id
                           ? _c(
                               "button",
                               {
@@ -31549,11 +31555,11 @@ var render = function () {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.productsLoading
+        _vm.status.products.loading
           ? _c("div", { staticClass: "row" }, [_vm._m(0)])
           : _vm._e(),
         _vm._v(" "),
-        !_vm.productsLoading && _vm.getProducts.length == 0
+        !_vm.status.products.loading && _vm.getProducts.length == 0
           ? _c("div", { staticClass: "row" }, [_vm._m(1)])
           : _vm._e(),
       ],
@@ -48505,7 +48511,7 @@ var index = {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_from":"axios@^0.21","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"axios@^0.21","name":"axios","escapedName":"axios","rawSpec":"^0.21","saveSpec":null,"fetchSpec":"^0.21"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_shasum":"c67b90dc0568e5c1cf2b0b858c43ba28e2eda575","_spec":"axios@^0.21","_where":"C:\\\\xampp\\\\htdocs\\\\laravel_vue","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundleDependencies":false,"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"deprecated":false,"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
+module.exports = JSON.parse('{"_from":"axios@^0.21","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"axios@^0.21","name":"axios","escapedName":"axios","rawSpec":"^0.21","saveSpec":null,"fetchSpec":"^0.21"},"_requiredBy":["#DEV:/","#USER"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_shasum":"c67b90dc0568e5c1cf2b0b858c43ba28e2eda575","_spec":"axios@^0.21","_where":"C:\\\\xampp\\\\htdocs\\\\laravel_vue","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundleDependencies":false,"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"deprecated":false,"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ })
 

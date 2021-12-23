@@ -4,10 +4,10 @@
       <div class="col-md-8">
         <div class="card">
           <div class="card-header">Add Product</div>
-          <div class="alert bg bg-danger text-white" v-if="error.error">
+          <div class="alert bg bg-danger text-white" v-if="status.saveProduct.error"  >
             <ul>
-              <li v-for="error in error.error" :key="error[0]">
-                {{ error[0] }}
+              <li v-for="error in status.saveProduct.error"  :key="error[0]">
+                {{error[0]}}
               </li>
             </ul>
           </div>
@@ -48,9 +48,7 @@
                     class="btn btn-primary"
                     type="button"
                     disabled
-                    v-if="
-                      loading.type == 'saveProduct' && loading.status == true
-                    "
+                    v-if="status.saveProduct.loading"
                   >
                     <span
                       class="spinner-border spinner-border-sm"
@@ -81,7 +79,7 @@ export default {
       description: "",
     };
   },
-  computed: mapGetters("products", ["loading", "error"]),
+  computed: mapGetters("products", ["status"]),
   methods: {
     ...mapActions("products", ["saveProduct"]),
     handleSubmit() {
