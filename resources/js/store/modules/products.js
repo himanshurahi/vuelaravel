@@ -57,7 +57,7 @@ export default {
                     dataName: "saveProduct",
                     status: false,
                 });
-                commit("clearErrors");
+                commit("clearErrors", 'saveProduct');
                 router.push({ name: "Home" });
             } catch (e) {
                 commit("setError", {
@@ -84,7 +84,7 @@ export default {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                commit ("deleteProductWithId", id)
+                commit("deleteProductWithId", id);
                 commit("setLoading", {
                     dataName: "deleteProduct",
                     status: false,
@@ -128,11 +128,8 @@ export default {
             state.productsLoading = status;
         },
 
-        clearErrors: (state) => {
-            state.error = {
-                error: "",
-                type: "",
-            };
+        clearErrors: (state, dataName) => {
+            state.status[dataName].error = ""
         },
     },
 };

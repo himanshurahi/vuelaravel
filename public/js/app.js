@@ -6563,7 +6563,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   dataName: "saveProduct",
                   status: false
                 });
-                commit("clearErrors");
+                commit("clearErrors", 'saveProduct');
                 _routes_routes__WEBPACK_IMPORTED_MODULE_1__["default"].push({
                   name: "Home"
                 });
@@ -6674,11 +6674,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     productsLoading: function productsLoading(state, status) {
       state.productsLoading = status;
     },
-    clearErrors: function clearErrors(state) {
-      state.error = {
-        error: "",
-        type: ""
-      };
+    clearErrors: function clearErrors(state, dataName) {
+      state.status[dataName].error = "";
     }
   }
 });
